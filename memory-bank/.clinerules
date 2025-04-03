@@ -1,0 +1,127 @@
+# DishDash Project Rules
+
+## Code Structure Patterns
+
+1. **File Organization**
+
+   - UI components in `/lib/components/`
+   - Screens in `/lib/screens/`
+   - Models in `/lib/models/`
+   - Utilities in `/lib/utils/`
+   - Repository classes in `/lib/repositories/`
+   - Database-related code in `/lib/utils/` (e.g., DatabaseHelper)
+
+2. **Naming Conventions**
+
+   - Model classes use singular nouns (e.g., `User`)
+   - Screen classes end with "Screen" (e.g., `HomeScreen`)
+   - Component classes use descriptive nouns (e.g., `FoodItemCard`)
+   - Repository classes end with "Repository" (e.g., `FoodRepository`)
+   - Utility classes use descriptive names (e.g., `SessionManager`)
+
+3. **Code Style Preferences**
+   - Use const constructors where possible
+   - Prefer named parameters for widget constructors
+   - Use trailing commas for multiline parameter lists
+   - Follow Flutter style guide for widget structure
+
+## Implementation Patterns
+
+1. **Database Access**
+
+   - Always access the database through repository classes, never directly
+   - Use the singleton DatabaseHelper instance
+   - Handle database errors and return meaningful error messages
+   - Use transactions for multi-step operations
+
+2. **State Management**
+
+   - Use Provider for app-wide state
+   - Local state should use StatefulWidget and setState
+   - Avoid unnecessary widget rebuilds by using Consumer strategically
+
+3. **UI Components**
+
+   - Follow the AppTheme for consistent styling
+   - Use SizedBox for spacing rather than Padding where appropriate
+   - Extract reusable widgets into components
+   - Implement error handling for image loading
+
+4. **Navigation**
+
+   - Use named routes for primary navigation
+   - Handle deep linking where necessary
+   - Check authentication state before navigating to protected routes
+
+5. **Authentication Flow**
+   - Always check user status using `SessionManager.isLoggedIn()` and `getUserEmail()`
+   - Guest user is identified by email 'guest@example.com'
+   - Show login prompt when guest users attempt restricted actions
+   - After login from a restricted feature, return to the original screen
+
+## Known Challenge Areas
+
+1. **Image Loading**
+
+   - Use CachedNetworkImage for all network images
+   - Always include error and placeholder widgets
+   - Use reliable image URLs (Unsplash preferred)
+   - Handle loading failures gracefully
+
+2. **Authentication Edge Cases**
+
+   - Always validate session state when loading screens
+   - Handle session timeout and invalid sessions gracefully
+   - Check for guest user status when features require authentication
+   - Use dedicated dialogs when prompting for login
+
+3. **Session Management**
+   - Clearly distinguish between guest and authenticated users
+   - Handle token expiration gracefully
+   - Provide clear user feedback during authentication
+   - Store minimal sensitive information
+
+## User Preferences
+
+1. **UI Experience**
+
+   - Clear, readable text with sufficient contrast
+   - Visual feedback for all user actions
+   - Minimal loading times and smooth transitions
+   - Intuitive navigation structure
+
+2. **Development Focus**
+   - Prioritize stability over new features
+   - Address critical issues before enhancements
+   - Maintain backward compatibility
+   - Ensure responsive design for all screen sizes
+
+## Key Implementation Notes
+
+1. **SQLite Database**
+
+   - Database version is incremented to force schema updates
+   - Current version is 3
+   - Initial data includes default users and food categories
+   - Foreign key relationships must be enforced
+
+2. **Authentication**
+
+   - Session data stored in SharedPreferences with keys: userId, userEmail, isLoggedIn
+   - Guest user has email 'guest@example.com' in the database
+   - Guest users can browse food items and add to favorites
+   - Full authentication required for cart, checkout, and profile features
+   - Login transitions should return to the original screen when coming from a restricted action
+
+3. **Image Resources**
+
+   - Remote images use Unsplash URLs
+   - Local assets in assets/images/
+   - Use appropriate image resolution for different screens
+   - Implement error fallbacks for all image loading
+
+4. **User Experience Patterns**
+   - Show login dialogs with proper context (e.g., "Login to add to cart")
+   - Use consistent messaging for authentication prompts
+   - Clearly indicate guest mode in relevant screens
+   - Provide easy login access from restricted features
